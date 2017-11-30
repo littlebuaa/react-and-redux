@@ -1,41 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { PropTypes } from 'prop-types';
+import {connect} from 'react-redux';
 
-import SummaryStore from '../stores/SummaryStore.js';
-
-class Summary extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.onUpdate = this.onUpdate.bind(this);
-
-    this.state = {
-      sum: SummaryStore.getSummary()
-    }
-  }
-
-  componentDidMount() {
-    SummaryStore.addChangeListener(this.onUpdate);
-  }
-
-  componentWillUnmount() {
-    SummaryStore.removeChangeListener(this.onUpdate);
-  }
-
-  onUpdate() {
-    this.setState({
-      sum: SummaryStore.getSummary()
-    })
-  }
-
-  render() {
-    return (
-      <div>Total Count: {this.state.sum}</div>
-    );
-  }
+function Summary({value}) {
+  return (
+    <div>Total Count: {value}</div>
+  );
 }
 
-export default Summary;
+Summary.PropTypes = {
+  value: PropTypes.number.isRequired
+};
 
+function mapStateToProps(state) {
+  let sum = 0;
+  for (const key in state) {
+    if (state.hasOwnProperty(key)) {
+      sum += state[key];
+    }
+  }
+  return {value: sum};
+}
+
+
+export default connect(mapStateToProps)(Summary);
 
 
